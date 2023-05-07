@@ -1,0 +1,27 @@
+Plymouth themes for Arch
+
+
+
+To active Plymouth learn howto https://wiki.archlinux.org/index.php/Plymouth
+
+* HOW TO INSTALL *
+
+Copy the theme folder arch-logo to: /usr/share/plymouth/themes/
+
+The available themes can be listed with:
+# plymouth-set-default-theme --list
+
+Update your plymouth configuration (as root):
+# plymouth-set-default-theme <selected_theme>
+
+Configure it as your default plymouth theme with (as root):
+# mkinitcpio -p kernel26
+
+
+* CREDITS *
+
+arch-logo
+Arch adaptation of the debian-logo and ubuntu-logo theme, all credits goes to Alberto Milone for the original coding.
+
+Have fun!
+karlinux
