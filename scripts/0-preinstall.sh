@@ -21,17 +21,15 @@ sgdisk -Z ${DISK} # zap all on disk
 sgdisk -a 2048 -o ${DISK} # new gpt disk 2048 alignment
 
 # create partitions
-sgdisk -n 1::+1M --typecode=1:ef02 --change-name=1:'BIOSBOOT' ${DISK} # partition 1 (BIOS Boot Partition)
-sgdisk -n 2::+300M --typecode=2:ef00 --change-name=2:'EFIBOOT' ${DISK} # partition 2 (UEFI Boot Partition)
-sgdisk -n 3::-0 --typecode=3:8300 --change-name=3:'ROOT' ${DISK} # partition 3 (Root), default start, remaining
-if [[ ! -d "/sys/firmware/efi" ]]; then # Checking for bios system
+sgdisk -n 1::+1M --typecode=1:ef02 --change-name=1:'BIOSBOOT' ${DISK} 
+sgdisk -n 2::+300M --typecode=2:ef00 --change-name=2:'EFIBOOT' ${DISK} 
+sgdisk -n 3::-0 --typecode=3:8300 --change-name=3:'ROOT' ${DISK} 
+if [[ ! -d "/sys/firmware/efi" ]]; then 
     sgdisk -A 1:set:2 ${DISK}
 fi
-partprobe ${DISK} # reread partition table to ensure it is correct
+partprobe ${DISK} 
 
-# make filesystems
 
-# @description Creates the btrfs subvolumes. 
 createsubvolumes () {
     btrfs subvolume create /mnt/@
     btrfs subvolume create /mnt/@home
@@ -40,7 +38,7 @@ createsubvolumes () {
     btrfs subvolume create /mnt/@.snapshots
 }
 
-# @description Mount all btrfs subvolumes after root has been mounted.
+
 mountallsubvol () {
     mount -o ${MOUNT_OPTIONS},subvol=@home ${partition3} /mnt/home
     mount -o ${MOUNT_OPTIONS},subvol=@tmp ${partition3} /mnt/tmp
@@ -48,17 +46,17 @@ mountallsubvol () {
     mount -o ${MOUNT_OPTIONS},subvol=@.snapshots ${partition3} /mnt/.snapshots
 }
 
-# @description BTRFS subvolulme creation and mounting. 
+
 subvolumesetup () {
-# create nonroot subvolumes
+
     createsubvolumes     
-# unmount root to remount with subvolume 
+ 
     umount /mnt
-# mount @ subvolume
+
     mount -o ${MOUNT_OPTIONS},subvol=@ ${partition3} /mnt
-# make directories home, .snapshots, var, tmp
+
     mkdir -p /mnt/{home,var,tmp,.snapshots}
-# mount subvolumes
+
     mountallsubvol
 }
 
