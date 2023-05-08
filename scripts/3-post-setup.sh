@@ -1,31 +1,66 @@
 #!/usr/bin/env bash
 
+echo -ne "
+-------------------------------------------------------------------------
+
+        ░██████╗██╗░░░██╗██████╗░██╗░░░██╗██╗░░██╗░█████╗░░██████╗
+        ██╔════╝╚██╗░██╔╝██╔══██╗╚██╗░██╔╝██║░██╔╝██╔══██╗██╔════╝
+        ╚█████╗░░╚████╔╝░██║░░██║░╚████╔╝░█████═╝░██║░░██║╚█████╗░
+        ░╚═══██╗░░╚██╔╝░░██║░░██║░░╚██╔╝░░██╔═██╗░██║░░██║░╚═══██╗
+        ██████╔╝░░░██║░░░██████╔╝░░░██║░░░██║░╚██╗╚█████╔╝██████╔╝
+        ╚═════╝░░░░╚═╝░░░╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝░╚════╝░╚═════╝░
+
+-------------------------------------------------------------------------
+                    Automated Arch Linux Installer
+-------------------------------------------------------------------------
+
+Final Setup and Configurations
+GRUB EFI Bootloader Install & Check
+"
 source ${HOME}/SyDykOS/configs/setup.conf
 
 if [[ -d "/sys/firmware/efi" ]]; then
     grub-install --efi-directory=/boot ${DISK}
 fi
 
-# set kernel parameter for decrypting the drive
-if [[ "${FS}" == "luks" ]]; then
-sed -i "s%GRUB_CMDLINE_LINUX_DEFAULT=\"%GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=${ENCRYPTED_PARTITION_UUID}:ROOT root=/dev/mapper/ROOT %g" /etc/default/grub
-fi
 
-
-
-systemctl enable sddm.service
+echo -ne "
+-------------------------------------------------------------------------
+               Enabling (and Theming) Login Display Manager
+-------------------------------------------------------------------------
+"
+#check later
+if [[ ${DESKTOP_ENV} == "kde" ]]; then
+  systemctl enable sddm.service
+  if [[ ${INSTALL_TYPE} == "FULL" ]]; then
     echo [Theme] >>  /etc/sddm.conf
     echo Current=sweet >> /etc/sddm.conf
-  
+  fi
 
+elif [[ "${DESKTOP_ENV}" == "gnome" ]]; then
+  systemctl enable gdm.service
 
+else
+  if [[ ! "${DESKTOP_ENV}" == "server"  ]]; then
+  sudo pacman -S --noconfirm --needed lightdm lightdm-gtk-greeter
+  systemctl enable lightdm.service
+  fi
+fi
+
+echo -ne "
+-------------------------------------------------------------------------
+                    Enabling Essential Services
+-------------------------------------------------------------------------
+"
 systemctl enable cups.service
 echo "  Cups enabled"
 ntpd -qg
 systemctl enable ntpd.service
 echo "  NTP enabled"
-systemctl enable dhcpcd.service
-echo "  DHCP enable"
+systemctl disable dhcpcd.service
+echo "  DHCP disabled"
+systemctl stop dhcpcd.service
+echo "  DHCP stopped"
 systemctl enable NetworkManager.service
 echo "  NetworkManager enabled"
 systemctl enable bluetooth
@@ -33,24 +68,43 @@ echo "  Bluetooth enabled"
 systemctl enable avahi-daemon.service
 echo "  Avahi enabled"
 
-if [[ "${FS}" == "luks" || "${FS}" == "btrfs" ]]; then
+#if [[ "${FS}" == "btrfs" ]]; then
+#echo -ne "
+#-------------------------------------------------------------------------
+#                    Creating Snapper Config
+#-------------------------------------------------------------------------
+#"
 
+#SNAPPER_CONF="$HOME/SyDykOS/configs/etc/snapper/configs/root"
+#mkdir -p /etc/snapper/configs/
+#cp -rfv ${SNAPPER_CONF} /etc/snapper/configs/
 
+#SNAPPER_CONF_D="$HOME/SyDykOS/configs/etc/conf.d/snapper"
+#mkdir -p /etc/conf.d/
+#cp -rfv ${SNAPPER_CONF_D} /etc/conf.d/
+
+#fi
+
+echo -ne "
+-------------------------------------------------------------------------
+               Enabling (and Theming) Plymouth Boot Splash
+-------------------------------------------------------------------------
+"
+#check later
 PLYMOUTH_THEMES_DIR="$HOME/SyDykOS/configs/usr/share/plymouth/themes"
-PLYMOUTH_THEME="141697-Arch-logo-plymouth" # can grab from config later if we allow selection
+PLYMOUTH_THEME="Arch-logo-plymouth" # can grab from config later if we allow selection
 mkdir -p /usr/share/plymouth/themes
 echo 'Installing Plymouth theme...'
 cp -rf ${PLYMOUTH_THEMES_DIR}/${PLYMOUTH_THEME} /usr/share/plymouth/themes
-if  [[ $FS == "luks"]]; then
-  sed -i 's/HOOKS=(base udev*/& plymouth/' /etc/mkinitcpio.conf # add plymouth after base udev
-  sed -i 's/HOOKS=(base udev \(.*block\) /&plymouth-/' /etc/mkinitcpio.conf # create plymouth-encrypt after block hook
-else
-  sed -i 's/HOOKS=(base udev*/& plymouth/' /etc/mkinitcpio.conf # add plymouth after base udev
-fi
-plymouth-set-default-theme -R '141697-Arch-logo-plymouth' # sets the theme and runs mkinitcpio
+
+plymouth-set-default-theme -R Arch-logo-plymouth # sets the theme and runs mkinitcpio
 echo 'Plymouth theme installed'
 
-
+echo -ne "
+-------------------------------------------------------------------------
+                    Cleaning
+-------------------------------------------------------------------------
+"
 # Remove no password sudo rights
 sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 sed -i 's/^%wheel ALL=(ALL:ALL) NOPASSWD: ALL/# %wheel ALL=(ALL:ALL) NOPASSWD: ALL/' /etc/sudoers
@@ -58,8 +112,8 @@ sed -i 's/^%wheel ALL=(ALL:ALL) NOPASSWD: ALL/# %wheel ALL=(ALL:ALL) NOPASSWD: A
 sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 
-rm -r $HOME/ArchTitus
-rm -r /home/$USERNAME/ArchTitus
+rm -r $HOME/SyDykOS
+rm -r /home/$USERNAME/SyDykOS
 
 # Replace in the same state
 cd $pwd
