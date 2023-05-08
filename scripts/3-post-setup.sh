@@ -52,9 +52,9 @@ echo -ne "
                     Enabling Essential Services
 -------------------------------------------------------------------------
 "
-systemctl enable cups.service
-echo "  Cups enabled"
-ntpd -qg
+#systemctl enable cups.service
+#echo "  Cups enabled"
+#ntpd -qg
 systemctl enable ntpd.service
 echo "  NTP enabled"
 systemctl disable dhcpcd.service
