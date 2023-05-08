@@ -1,3 +1,20 @@
+mesa
+xorg
+xorg-server
+xorg-apps
+xorg-drivers
+xorg-xkill
+xorg-xinit
+xterm
+binutils
+dosfstools
+linux-headers
+noto-fonts-emoji
+usbutils
+xdg-user-dirs
+nmap
+vim
+--END OF LIGHT INSTALL--
 alsa-plugins
 alsa-utils
 ark
