@@ -1,3 +1,7 @@
+plasma-desktop
+sddm
+dolphin
+--END OF LIGHT INSTALL--
 ark
 bluedevil
 breeze
