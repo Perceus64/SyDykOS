@@ -19,7 +19,7 @@ Setting up mirrors for optimal download
 source $CONFIGS_DIR/setup.conf
 iso=$(curl -4 ifconfig.co/country-iso)
 timedatectl set-ntp true
-pacman -S --noconfirm archlinux-keyring #update keyrings to latest to prevent packages failing to install
+pacman -S --noconfirm archlinux-keyring
 pacman -S --noconfirm --needed pacman-contrib terminus-font
 setfont ter-v22b
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
@@ -31,7 +31,7 @@ echo -ne "
 -------------------------------------------------------------------------
 "
 reflector -a 48 -c $iso -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist
-mkdir /mnt &>/dev/null # Hiding error message if any
+mkdir /mnt &>/dev/null
 echo -ne "
 -------------------------------------------------------------------------
                     Installing Prerequisites
@@ -43,10 +43,10 @@ echo -ne "
                     Formating Disk
 -------------------------------------------------------------------------
 "
-umount -A --recursive /mnt # make sure everything is unmounted before we start
+umount -A --recursive /mnt
 # disk prep
-sgdisk -Z ${DISK} # zap all on disk
-sgdisk -a 2048 -o ${DISK} # new gpt disk 2048 alignment
+sgdisk -Z ${DISK}
+sgdisk -a 2048 -o ${DISK}
 
 # create partitions
 sgdisk -n 1::+1M --typecode=1:ef02 --change-name=1:'BIOSBOOT' ${DISK} # partition 1 (BIOS Boot Partition)
@@ -55,7 +55,7 @@ sgdisk -n 3::-0 --typecode=3:8300 --change-name=3:'ROOT' ${DISK} # partition 3 (
 if [[ ! -d "/sys/firmware/efi" ]]; then # Checking for bios system
     sgdisk -A 1:set:2 ${DISK}
 fi
-partprobe ${DISK} # reread partition table to ensure it is correct
+partprobe ${DISK}
 
 # make filesystems
 echo -ne "
