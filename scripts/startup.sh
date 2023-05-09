@@ -5,9 +5,6 @@ if [ ! -f $CONFIG_FILE ]; then # check if file exists
     touch -f $CONFIG_FILE # create file if not exists
 fi
 
-# @description set options in setup.conf
-# @arg $1 string Configuration variable.
-# @arg $2 string Configuration value.
 set_option() {
     if grep -Eq "^${1}.*" $CONFIG_FILE; then # check if option exists
         sed -i -e "/^${1}.*/d" $CONFIG_FILE # delete option if exists
@@ -195,9 +192,9 @@ options=("btrfs" "ext4" "exit")
 select_option $? 1 "${options[@]}"
 
 case $? in
-1) set_option FS btrfs;;
-2) set_option FS ext4;;
-3) exit ;;
+0) set_option FS btrfs;;
+1) set_option FS ext4;;
+2) exit ;;
 *) echo "Wrong option please select again"; filesystem;;
 esac
 }
