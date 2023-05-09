@@ -54,12 +54,6 @@ background_checks() {
     pacman_check
 }
 
-# Renders a text based list of options that can be selected by the
-# user using up, down and enter keys and returns the chosen option.
-#
-#   Arguments   : list of options, maximum of 256
-#                 "opt1" "opt2" ...
-#   Return value: selected index (0 for opt1, 1 for opt2 ...)
 select_option() {
 
     # little helpers for terminal print control and key input
@@ -163,8 +157,7 @@ select_option() {
 
     return $(( $active_col + $active_row * $colmax ))
 }
-# @description Displays ArchTitus logo
-# @noargs
+
 logo () {
 # This will be shown on every set as user is progressing
 echo -ne "
@@ -182,8 +175,7 @@ echo -ne "
 ------------------------------------------------------------------------
 "
 }
-# @description This function will handle file systems. At this movement we are handling only
-# btrfs and ext4. Others will be added in future.
+
 filesystem () {
 echo -ne "
 Please Select your file system for both boot and root
@@ -316,9 +308,6 @@ installtype () {
   install_type=${options[$?]}
   set_option INSTALL_TYPE $install_type
 }
-
-# More features in future
-# language (){}
 
 # Starting functions
 background_checks
