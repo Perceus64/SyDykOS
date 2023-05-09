@@ -61,13 +61,11 @@ echo -ne "
                     Installing Base System  
 -------------------------------------------------------------------------
 "
-# sed $INSTALL_TYPE is using install type to check for MINIMAL installation, if it's true, stop
-# stop the script and move on, not installing any more packages below that line
 if [[ ! $DESKTOP_ENV == server ]]; then
   sed -n '/'$INSTALL_TYPE'/q;p' $HOME/SyDykOS/pkg-files/pacman-pkgs.txt | while read line
   do
     if [[ ${line} == '--END OF LIGHT INSTALL--' ]]; then
-      # If selected installation type is FULL, skip the --END OF THE MINIMAL INSTALLATION-- line
+     
       continue
     fi
     echo "INSTALLING: ${line}"
@@ -79,7 +77,7 @@ echo -ne "
                     Installing Microcode
 -------------------------------------------------------------------------
 "
-# determine processor type and install microcode
+
 proc_type=$(lscpu)
 if grep -E "GenuineIntel" <<< ${proc_type}; then
     echo "Installing Intel microcode"
@@ -96,7 +94,7 @@ echo -ne "
                     Installing Graphics Drivers
 -------------------------------------------------------------------------
 "
-# Graphics Drivers find and install
+
 gpu_type=$(lspci)
 if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
     pacman -S --noconfirm --needed nvidia
@@ -114,8 +112,7 @@ if ! source $HOME/SyDykOS/configs/setup.conf; then
 	while true
 	do 
 		read -p "Please enter username:" username
-		# username regex per response here https://unix.stackexchange.com/questions/157426/what-is-the-regex-to-validate-linux-users
-		# lowercase the username to test regex
+		
 		if [[ "${username,,}" =~ ^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$ ]]
 		then 
 			break
