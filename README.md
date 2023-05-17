@@ -7,12 +7,10 @@ Download ArchISO from https://archlinux.org/download/ and put on a USB drive wit
 #Step 2
 How to install
 
+```
 pacman -Sy git
 git clone https://github.com/Perceus64/SyDykOS
 cd SyDykOS
+chmod +x ./sydykos.sh
 ./sydykos.sh
-
-``` Ruby
-class MyClass
-end
 ```
