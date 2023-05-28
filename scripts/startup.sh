@@ -111,7 +111,7 @@ select_option() {
         done
     }
 
-    # initially print empty new lines (scroll down if at bottom of screen)
+    # print empty new lines 
     for opt; do printf "\n"; done
 
     # determine current screen position for overwriting the options
@@ -190,9 +190,9 @@ case $? in
 *) echo "Wrong option please select again"; filesystem;;
 esac
 }
-# @description Detects and sets timezone. 
+# Detects and sets timezone. 
 timezone () {
-# Added this from arch wiki https://wiki.archlinux.org/title/System_time
+# from arch wiki https://wiki.archlinux.org/title/System_time
 time_zone="$(curl --fail https://ipapi.co/timezone)"
 echo -ne "
 System detected your timezone to be '$time_zone' \n"
@@ -213,7 +213,7 @@ case ${options[$?]} in
     *) echo "Wrong option. Try again";timezone;;
 esac
 }
-# @description Set user's keyboard mapping. 
+# Set user's keyboard mapping. 
 keymap () {
 echo -ne "
 Please select key board layout from this list"
@@ -227,7 +227,7 @@ echo -ne "Your key boards layout: ${keymap} \n"
 set_option KEYMAP $keymap
 }
 
-# @description Choose whether drive is SSD or not.
+# Choose whether drive is SSD or not.
 drivessd () {
 echo -ne "
 Is this an ssd? yes/no:
@@ -245,7 +245,7 @@ case ${options[$?]} in
 esac
 }
 
-# @description Disk selection for drive to be used with installation.
+# Disk selection for drive to be used with installation.
 diskpart () {
 echo -ne "
 ------------------------------------------------------------------------
@@ -269,7 +269,7 @@ echo -e "\n${disk%|*} selected \n"
 drivessd
 }
 
-# @description Gather username and password to be used for installation. 
+# Gather username and password to be used for installation. 
 userinfo () {
 read -p "Please enter your username: " username
 set_option USERNAME ${username,,} # convert to lower case as in issue #109 
@@ -278,7 +278,7 @@ read -rep "Please enter your hostname: " nameofmachine
 set_option NAME_OF_MACHINE $nameofmachine
 }
 
-# @description Choose AUR helper. 
+# Choose AUR helper. 
 aurhelper () {
   # Let the user choose AUR helper from predefined list
   echo -ne "Please enter your desired AUR helper:\n"
@@ -288,7 +288,7 @@ aurhelper () {
   set_option AUR_HELPER $aur_helper
 }
 
-# @description Choose Desktop Environment
+# Choose Desktop Environment
 desktopenv () {
   # Let the user choose Desktop Enviroment from predefined list
   echo -ne "Please select your desired Desktop Enviroment:\n"
@@ -298,7 +298,7 @@ desktopenv () {
   set_option DESKTOP_ENV $desktop_env
 }
 
-# @description Choose whether to do full or minimal installation. 
+# Choose whether to do full or minimal installation. 
 installtype () {
   echo -ne "Please select type of installation:\n\n
   Full install: Installs full featured desktop enviroment, with added apps and themes needed for everyday use\n
