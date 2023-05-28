@@ -298,7 +298,7 @@ desktopenv () {
   set_option DESKTOP_ENV $desktop_env
 }
 
-# Choose whether to do full or minimal installation. 
+# Choose whether to do full or light installation. 
 installtype () {
   echo -ne "Please select type of installation:\n\n
   Full install: Installs full featured desktop enviroment, with added apps and themes needed for everyday use\n
